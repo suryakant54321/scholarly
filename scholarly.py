@@ -109,7 +109,7 @@ def _search_citation_soup(soup):
     while True:
         for row in soup.find_all('div', 'gsc_1usr'):
             yield Author(row)
-        nextbutton = soup.find(class_='gs_btnPR gs_in_ib gs_btn_half gs_btn_srt')
+        nextbutton = soup.find(class_='gs_btnPR gs_in_ib gs_btn_half gs_btn_lsb gs_btn_srt gsc_pgn_pnx')
         if nextbutton and 'disabled' not in nextbutton.attrs:
             url = nextbutton['onclick'][17:-1]
             url = codecs.getdecoder("unicode_escape")(url)[0]
