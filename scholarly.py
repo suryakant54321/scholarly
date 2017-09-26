@@ -125,10 +125,15 @@ class Publication(object):
         self.source = pubtype
         if self.source == 'citations':
             self.bib['title'] = __data.find('a', class_='gsc_a_at').text
-            self.id_citations = re.findall(_CITATIONPUBRE, __data.find('a', class_='gsc_a_at')['href'])[0]
-            citedby = __data.find(class_='gsc_a_ac')
+            self.id_citations = re.findall(_CITATIONPUBRE, __data.find('a', class_='gsc_a_at')['data-href'])[0]
+            citedby = __data.find(class_='gsc_a_ac gs_ibl')
+            #print(citedby)
             if citedby and not citedby.text.isspace():
-                self.citedby = int(citedby.text)
+                try:
+                    self.citedby = int(citedby.text)
+                except:
+                    self.citedby = 0
+                #print(self.citedby)
             year = __data.find(class_='gsc_a_h')
             if year and year.text and not year.text.isspace() and len(year.text)>0:
                 self.bib['year'] = int(year.text)
@@ -164,12 +169,12 @@ class Publication(object):
         if self.source == 'citations':
             url = _CITATIONPUB.format(self.id_citations)
             soup = _get_soup(_HOST+url)
-            self.bib['title'] = soup.find('div', id='gsc_title').text
+            self.bib['title'] = soup.find('div', id='gsc_vcd_title').text
             if soup.find('a', class_='gsc_title_link'):
                 self.bib['url'] = soup.find('a', class_='gsc_title_link')['href']
             for item in soup.find_all('div', class_='gs_scl'):
-                key = item.find(class_='gsc_field').text
-                val = item.find(class_='gsc_value')
+                key = item.find(class_='gsc_vcd_field')
+                val = item.find(class_='gsc_vcd_value')
                 if key == 'Authors':
                     self.bib['author'] = ' and '.join([i.strip() for i in val.text.split(',')])
                 elif key == 'Journal':
@@ -266,7 +271,7 @@ class Author(object):
             for row in soup.find_all('tr', class_='gsc_a_tr'):
                 new_pub = Publication(row, 'citations')
                 self.publications.append(new_pub)
-            if 'disabled' not in soup.find('button', id='gsc_bpf_next').attrs:
+            if 'disabled' not in soup.find('button', id='gsc_bpf_more').attrs:
                 pubstart += _PAGESIZE
                 url = '{0}&cstart={1}&pagesize={2}'.format(url_citations, pubstart, _PAGESIZE)
                 soup = _get_soup(_HOST+url)
