@@ -96,7 +96,7 @@ then retrieve the titles of the papers that cite his most popular
         >>> pub = author.publications[0].fill()
         >>> print(pub)
 
-        >>> # Which papers cited that publication?
+        >>> # TODO for v0.2.3: Which papers cited that publication?
         >>> print([citation.bib['title'] for citation in pub.get_citedby()])
 
 Installation
@@ -133,6 +133,12 @@ Changes
 
 Note that because of the nature of web scraping, this project will be in
 **perpetual alpha**.
+
+v0.2.3
+~~~~~~
+
+-  Minor fixes for changed html tags to get core running again. Needs more tests. Captcha
+   handling not currently operational.
 
 v0.2.2
 ~~~~~~
